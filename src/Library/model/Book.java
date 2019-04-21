@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 public class Book {
+    private int id;
     private String name;
     private String writer;
     private Date freeDate;
@@ -52,6 +53,14 @@ public class Book {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String toJSON(){

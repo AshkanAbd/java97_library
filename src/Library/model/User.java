@@ -1,5 +1,8 @@
 package Library.model;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +10,7 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private List<Book> books;
+    private List<String> books;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -45,16 +48,31 @@ public class User {
         this.password = password;
     }
 
-    public List<Book> getBooks() {
+    public List<String> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBooks(String booksArray) throws JSONException {
+        JSONArray jsonArray = new JSONArray(booksArray);
+        books = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            books.add(jsonArray.getString(i));
+        }
     }
 
-    public void addBook(Book book) {
-        this.books.add(book);
+    public void addBook(String bookID) {
+        books.add(bookID);
+    }
+
+    public void removeBook(String bookID) {
+        books.remove(bookID);
+    }
+
+    public String getBooksJSON() {
+        JSONArray jsonArray = new JSONArray();
+        for (String str : books)
+            jsonArray.put(str);
+        return jsonArray.toString();
     }
 
     @Override

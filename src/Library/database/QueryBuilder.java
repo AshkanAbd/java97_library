@@ -6,8 +6,8 @@ import Library.model.User;
 import java.sql.Date;
 import java.util.Map;
 
-public final class QureyBuilder {
-    private QureyBuilder() {
+public final class QueryBuilder {
+    private QueryBuilder() {
 
     }
 
@@ -40,12 +40,7 @@ public final class QureyBuilder {
             builder.append(";");
             return builder.toString();
         }
-        builder.append(" WHERE ");
-        for (Map.Entry<String, String> entry : cause.entrySet()) {
-            builder.append(entry.getKey()).append(" LIKE '").append(entry.getValue()).append("' AND ");
-        }
-        builder.delete(builder.lastIndexOf("AND"), builder.length());
-        builder.append(";");
+        builder.append(" WHERE ").append(createCause(cause)).append(";");
         return builder.toString();
     }
 
@@ -72,5 +67,33 @@ public final class QureyBuilder {
         return builder.toString();
     }
 
-//    public static String updateUser()
+    public static String updateUser(User user) {
+        StringBuilder builder = new StringBuilder("UPDATE users SET ");
+        builder.append("books = '").append(user.getBooksJSON()).append("' WHERE username LIKE ");
+        builder.append("'").append(user.getUsername()).append("';");
+        return builder.toString();
+    }
+
+    public static String deleteBook(Book book) {
+        return "DELETE FROM books WHERE book_name LIKE '" + book.getName() + "' AND writer LIKE '" + book.getWriter() + "';";
+    }
+
+    public static String deleteBook(Map<String, String> cause) {
+        StringBuilder builder = new StringBuilder("DELETE FROM books WHERE ");
+        builder.append(createCause(cause)).append(";");
+        return builder.toString();
+    }
+
+    public static String deleteUser(User user) {
+        return "DELETE FROM users WHERE username LIKE '" + user.getUsername() + "';";
+    }
+
+    private static String createCause(Map<String, String> cause) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : cause.entrySet()) {
+            builder.append(entry.getKey()).append(" LIKE '").append(entry.getValue()).append("' AND ");
+        }
+        builder.delete(builder.lastIndexOf(" AND"), builder.length());
+        return builder.toString();
+    }
 }
