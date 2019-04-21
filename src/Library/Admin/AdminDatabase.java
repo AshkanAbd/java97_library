@@ -1,6 +1,6 @@
 package Library.Admin;
 
-import Library.database.DataBase;
+import Library.database.Database;
 import Library.database.QueryBuilder;
 import Library.model.Book;
 import Library.model.User;
@@ -9,30 +9,58 @@ import org.json.JSONException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Calendar;
 
-public class AdminDataBase extends DataBase {
+public class AdminDatabase extends Database {
 
-    public AdminDataBase(String username, String password, String database) {
+    public AdminDatabase(String username, String password, String database) {
         super(username, password, database);
     }
 
-    public boolean insertBook(Book book) {
+    public void insertBook(Book book) {
         try {
             String query = QueryBuilder.insertBook(book);
             runQuery(query);
-            return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
+    public List<User> getUsers() {
+        List<User> userList = new ArrayList<>();
+        try {
+            String userQuery = QueryBuilder.selectUser(null);
+            ResultSet result = runQuery(userQuery);
+            while (result.next()) {
+                userList.add(getUserFromResult(result));
+            }
+        } catch (SQLException | JSONException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    public List<User> getUsers(String username) {
+        List<User> userList = new ArrayList<>();
+        try {
+            String userQuery = QueryBuilder.selectUser(username);
+            ResultSet result = runQuery(userQuery);
+            while (result.next()) {
+                userList.add(getUserFromResult(result));
+            }
+        } catch (SQLException | JSONException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
     public void verifyBooks() throws SQLException {
-        String query = QueryBuilder.selectBook(null);
-        ResultSet result = runQuery(query);
+        String selectBookQuery = QueryBuilder.selectBook(null);
+        ResultSet result = runQuery(selectBookQuery);
         Date sqlDate;
         java.util.Date today = Calendar.getInstance().getTime();
         while (result.next()) {
@@ -46,9 +74,7 @@ public class AdminDataBase extends DataBase {
 
     public void deleteBook(Book book) {
         try {
-            Map<String, String> bookCause = new HashMap<>();
-            bookCause.put("book_name", book.getName());
-            bookCause.put("writer", book.getWriter());
+            Map<String, String> bookCause = createCause(book);
             String findBookQuery = QueryBuilder.selectBook(bookCause);
             ResultSet bookResult = runQuery(findBookQuery);
             Book book1 = getBookFromResult(bookResult);
@@ -79,34 +105,4 @@ public class AdminDataBase extends DataBase {
 
         }
     }
-
-    private Book getBookFromResult(ResultSet resultSet) throws SQLException {
-        String bookName = resultSet.getString("book_name");
-        String writer = resultSet.getString("writer");
-        String owner = resultSet.getString("owner");
-        int id = resultSet.getInt("id");
-        Date date = resultSet.getDate("free_date");
-        Book book = new Book(bookName, writer);
-        book.setOwner(owner);
-        book.setId(id);
-        book.setFreeDate(date);
-        return book;
-    }
-
-    public void freeBook(Book book) {
-        try {
-            String updateBookQuery = QueryBuilder.updateBook(book, null, null);
-            runQuery(updateBookQuery);
-            String userInfoQuery = QueryBuilder.selectUser(book.getOwner());
-            ResultSet result = runQuery(userInfoQuery);
-            User user = new User(book.getOwner());
-            user.setBooks(result.getString("books"));
-            user.removeBook(Integer.toString(book.getId()));
-            String updateUserQuery = QueryBuilder.updateUser(user);
-            runQuery(updateUserQuery);
-        } catch (SQLException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

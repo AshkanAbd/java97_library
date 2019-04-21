@@ -1,21 +1,19 @@
 package Library;
 
-import Library.database.DataBase;
+import Library.database.Database;
 import Library.controller.Controller;
-import Library.database.QueryBuilder;
-import Library.model.Book;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 
 public class Main extends Application {
 
-    private DataBase mySQL;
+    private Database mySQL;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
