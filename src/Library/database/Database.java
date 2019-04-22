@@ -22,6 +22,10 @@ public class Database {
     private String password = "Ashkan007";
     private Connection connection;
 
+    public static int EXIST_EMAIL = 1;
+    public static int EXIST_USERNAME = 2;
+    public static int UNKNOWN = 3;
+
     public Database(final String username, final String password, String database) {
         loadDriver();
         this.username = username;
@@ -40,8 +44,11 @@ public class Database {
 
     public ResultSet runQuery(String query) throws SQLException {
         Statement statement = connection.createStatement();
-        statement.executeQuery(query);
-        return statement.getResultSet();
+        if (statement.execute(query)) {
+            return statement.getResultSet();
+        } else {
+            return null;
+        }
     }
 
     private void loadDriver() {
@@ -50,6 +57,34 @@ public class Database {
             System.out.println("Driver loaded");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean signIn(String username, String password) {
+        try {
+            String loginQuery = QueryBuilder.selectUser(username);
+            ResultSet userResult = runQuery(loginQuery);
+            if (!userResult.first()) return false;
+            User user = getUserFromResult(userResult);
+            if (user.getPassword().equals(password))
+                return true;
+        } catch (SQLException | JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Object[] signUp(User user) {
+        try {
+            String signUpQuery = QueryBuilder.insertUser(user);
+            runQuery(signUpQuery);
+            return new Object[]{true};
+        } catch (SQLException e) {
+            if (e.getMessage().contains("email"))
+                return new Object[]{false, EXIST_EMAIL};
+            if (e.getMessage().contains("username"))
+                return new Object[]{false, EXIST_USERNAME};
+            return new Object[]{false, UNKNOWN};
         }
     }
 

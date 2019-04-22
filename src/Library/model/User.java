@@ -53,8 +53,11 @@ public class User {
     }
 
     public void setBooks(String booksArray) throws JSONException {
-        JSONArray jsonArray = new JSONArray(booksArray);
         books = new ArrayList<>();
+        if (booksArray == null) {
+            return;
+        }
+        JSONArray jsonArray = new JSONArray(booksArray);
         for (int i = 0; i < jsonArray.length(); i++) {
             books.add(jsonArray.getString(i));
         }

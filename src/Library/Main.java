@@ -13,23 +13,27 @@ import java.awt.Dimension;
 
 public class Main extends Application {
 
-    private Database mySQL;
+    private FXMLLoader loader;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/sample.fxml"));
-        Controller controller = new Controller();
-        loader.setController(controller);
-        Parent rootParent = loader.load();
+        loader = new FXMLLoader(getClass().getResource("UI.fxml"));
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dimension = toolkit.getScreenSize();
-        Scene mainScene = new Scene(rootParent, dimension.width, dimension.height);
-        primaryStage.setTitle("Hello World");
+        Controller controller = new Controller(dimension.width / 2, dimension.height / 2);
+        controller.setMain(this);
+        loader.setController(controller);
+        Parent rootParent = loader.load();
+        Scene mainScene = new Scene(rootParent, dimension.width / 2.0, dimension.height / 2.0);
+        primaryStage.setTitle("Library manager");
         primaryStage.setScene(mainScene);
         primaryStage.setResizable(false);
         primaryStage.show();
     }
 
+    public FXMLLoader getLoader() {
+        return loader;
+    }
 
     public static void main(String[] args) throws Exception {
         launch(args);
