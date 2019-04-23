@@ -39,11 +39,12 @@ public class UserDatabase extends Database {
     public void requestBook(Book book, User user) {
         try {
             Map<String, String> cause = createCause(book);
-            Date today = Date.valueOf(LocalDate.now());
-            String requestBookQuery = QueryBuilder.updateBook(book, user.getUsername(), today);
+            Date date = new Date(book.getFreeDate().getTime());
+            String requestBookQuery = QueryBuilder.updateBook(book, user.getUsername(), date);
             runQuery(requestBookQuery);
             String findBookQuery = QueryBuilder.selectBook(cause);
             ResultSet bookResult = runQuery(findBookQuery);
+            bookResult.first();
             Book book1 = getBookFromResult(bookResult);
             user.addBook(String.valueOf(book1.getId()));
             String updateUserQuery = QueryBuilder.updateUser(user);
@@ -66,6 +67,7 @@ public class UserDatabase extends Database {
                 cause.put("id", idString);
                 String findBookQuery = QueryBuilder.selectBook(cause);
                 ResultSet bookResult = runQuery(findBookQuery);
+                bookResult.first();
                 rentedList.add(getBookFromResult(bookResult));
             }
         } catch (SQLException | JSONException e) {

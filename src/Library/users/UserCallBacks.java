@@ -2,15 +2,19 @@ package Library.users;
 
 import Library.controller.BaseCallBack;
 import Library.model.Book;
-import javafx.scene.control.CheckBox;
+import Library.view.BookPane;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 class UserCallBacks extends BaseCallBack {
     private UserController userController;
@@ -32,11 +36,44 @@ class UserCallBacks extends BaseCallBack {
         }
         List<Book> bookList = userController.database.getBooks(cause);
         if (list.equalsIgnoreCase("All books")) {
-            VBox vBox = userController.createBookVBox(bookList, userController.booksLabel);
-            userController.booksScrollPane.setContent(vBox);
+            userController.refreshAllBookList(bookList);
         } else {
-            VBox vBox = userController.createBookVBox(bookList, userController.rentedBooksLabel);
-            userController.rentedScrollPane.setContent(vBox);
+            List<Book> rentedBooks = new ArrayList<>();
+            for (Book book : bookList) {
+                if (userController.rentedBookList.contains(book)) {
+                    rentedBooks.add(book);
+                }
+            }
+            userController.refreshRentedBookList(rentedBooks);
+        }
+    }
+
+    private void requestRent(MouseEvent mouseEvent, Book book, DatePicker datePicker) {
+        if (invalidClick(mouseEvent)) return;
+        String dateString = datePicker.getEditor().getText();
+        if (dateString.isEmpty()) return;
+        Date today = Date.valueOf(LocalDate.now());
+        Date rentDate = Date.valueOf(dateString);
+        if (!rentDate.after(today)) return;
+        book.setFreeDate(rentDate);
+        userController.database.requestBook(book, userController.user);
+        userController.refreshAllBookList(userController.database.getBooks());
+        userController.refreshRentedBookList(userController.database.rentedBooks(userController.user));
+        userController.bookInfoPane.setContent(null);
+    }
+
+    void onBookClick(MouseEvent mouseEvent, Book book) {
+        if (invalidClick(mouseEvent)) return;
+        BookPane bookPane = new BookPane(book);
+        userController.bookInfoPane.setContent(bookPane.getPane());
+        if (book.getOwner() == null || book.getOwner().isEmpty()) {
+            bookPane.getButton().setText("Rent");
+            bookPane.setOnClick(e -> requestRent(e, book, bookPane.getDatePicker()));
+        } else if (book.getOwner().equals(userController.user.getUsername())) {
+            bookPane.getButton().setText("Payback");
+            // TODO: 4/24/19 add payback listener
+        } else {
+            bookPane.getButton().setVisible(false);
         }
     }
 
@@ -46,6 +83,7 @@ class UserCallBacks extends BaseCallBack {
         userController.rentedScrollPane.setVisible(false);
         userController.signOut.setVisible(false);
         userController.searchBox.setVisible(false);
+        userController.bookInfoPane.setVisible(false);
         userController.controller.getStartButtonBox().setVisible(true);
         userController.controller.getAppTitle().setVisible(true);
         userController.controller.getMain().getLoader().setController(userController.controller);

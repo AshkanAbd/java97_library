@@ -54,7 +54,7 @@ public class User {
 
     public void setBooks(String booksArray) throws JSONException {
         books = new ArrayList<>();
-        if (booksArray == null) {
+        if (booksArray == null || booksArray.isEmpty()) {
             return;
         }
         JSONArray jsonArray = new JSONArray(booksArray);

@@ -19,10 +19,11 @@ public class UserController {
     Controller controller;
     private int screenWidth, screenHeight;
     UserDatabase database;
-    ScrollPane rentedScrollPane, booksScrollPane;
+    ScrollPane rentedScrollPane, booksScrollPane, bookInfoPane;
     VBox searchBox;
     Button signOut;
-    Label booksLabel, rentedBooksLabel;
+    private Label booksLabel, rentedBooksLabel;
+    List<Book> rentedBookList;
     private UserCallBacks callBacks;
 
     public UserController(int screenWidth, int screenHeight, User user, Controller preController) {
@@ -38,11 +39,23 @@ public class UserController {
         setupAllBooks();
         setupSignOutBtn();
         setupSearchPane();
+        setupBookInfo();
         controller.getMainPane().getChildren().addAll(rentedScrollPane, booksScrollPane);
         AnchorPane.setLeftAnchor(rentedScrollPane, 15.0);
         AnchorPane.setTopAnchor(rentedScrollPane, 20.0);
         AnchorPane.setLeftAnchor(booksScrollPane, 280.0);
         AnchorPane.setTopAnchor(booksScrollPane, 20.0);
+    }
+
+    private void setupBookInfo() {
+        bookInfoPane = new ScrollPane();
+        bookInfoPane.setFitToWidth(true);
+        bookInfoPane.setFitToHeight(true);
+        controller.getMainPane().getChildren().add(bookInfoPane);
+        AnchorPane.setLeftAnchor(bookInfoPane, 545.0);
+        AnchorPane.setTopAnchor(bookInfoPane, 330.0);
+        AnchorPane.setRightAnchor(bookInfoPane, 20.0);
+        AnchorPane.setBottomAnchor(bookInfoPane, 20.0);
     }
 
     private void setupSignOutBtn() {
@@ -51,6 +64,16 @@ public class UserController {
         AnchorPane.setTopAnchor(signOut, 20.0);
         AnchorPane.setRightAnchor(signOut, 20.0);
         controller.getMainPane().getChildren().add(signOut);
+    }
+
+    void refreshAllBookList(List<Book> bookList) {
+        VBox vBox = createBookVBox(bookList, booksLabel);
+        booksScrollPane.setContent(vBox);
+    }
+
+    void refreshRentedBookList(List<Book> bookList) {
+        VBox vBox = createBookVBox(bookList, rentedBooksLabel);
+        rentedScrollPane.setContent(vBox);
     }
 
     private void setupAllBooks() {
@@ -64,7 +87,7 @@ public class UserController {
     }
 
     private void setupRentedBooks() {
-        List<Book> rentedBookList = database.rentedBooks(user);
+        rentedBookList = database.rentedBooks(user);
         rentedBooksLabel = new Label("Rented books");
         rentedBooksLabel.setStyle("-fx-background-color: #F4F4F4;-fx-text-fill: #F00;-fx-text-alignment: center;-fx-alignment: center;" +
                 "-fx-font-family: 'DejaVu Serif';-fx-font-size: 20;-fx-padding: 10 0 10 0");
@@ -115,20 +138,20 @@ public class UserController {
         AnchorPane.setTopAnchor(searchBox, 20.0);
     }
 
-    ScrollPane createScrollPane(VBox vBox) {
+    private ScrollPane createScrollPane(VBox vBox) {
         ScrollPane scrollPane = new ScrollPane(vBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(screenHeight - 40);
         return scrollPane;
     }
 
-    VBox createBookVBox(List<Book> books, Label header) {
+    private VBox createBookVBox(List<Book> books, Label header) {
         VBox vBox = new VBox();
         vBox.getChildren().add(header);
         vBox.setPrefHeight(50);
         for (Book book : books) {
             BookViewHolder viewHolder = new BookViewHolder(book);
-            viewHolder.setOnClick(e -> System.out.println(book.getName()));
+            viewHolder.setOnClick(e -> callBacks.onBookClick(e, viewHolder.getBook()));
             Divider divider = new Divider("#f00", viewHolder.getPane().getPrefWidth() + 10, 5);
             vBox.getChildren().addAll(divider, viewHolder.getPane());
             vBox.setPrefHeight(vBox.getPrefHeight() + viewHolder.getPane().getPrefHeight() + 5);
