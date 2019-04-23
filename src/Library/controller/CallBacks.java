@@ -2,7 +2,6 @@ package Library.controller;
 
 import Library.database.Database;
 import Library.model.User;
-import Library.users.UserController;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -29,11 +28,18 @@ class CallBacks {
         controller.signUpDialog.show();
     }
 
+    void adminSignInBtnClicked(MouseEvent mouseEvent) {
+        if (invalidClick(mouseEvent)) return;
+        controller.adminSignInPassword.setText("");
+        controller.adminSignInDialog.show();
+    }
+
     void signInOkBtnClicked(MouseEvent mouseEvent) {
         if (invalidClick(mouseEvent)) return;
         String username = controller.usernameSignInTextField.getText();
         String password = controller.passwordSignInTextField.getText();
         if (username.isEmpty() || password.isEmpty()) return;
+        if (username.equals("admin")) return;
         controller.signInDialog.setResult("");
         controller.signInDialog.hide();
         if (controller.database.signIn(username, password)) {
@@ -80,6 +86,27 @@ class CallBacks {
         }
     }
 
+    void adminSignInOkBtnClicked(MouseEvent mouseEvent) {
+        if (invalidClick(mouseEvent)) return;
+        String password = controller.adminSignInPassword.getText();
+        if (password.isEmpty()) return;
+        controller.adminSignInDialog.setResult("");
+        controller.adminSignInDialog.hide();
+        if (controller.database.signIn("admin", password)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Enter admin mode successfully");
+            alert.setContentText(null);
+            alert.show();
+//            controller.enterUserMode(new User(username));
+            // TODO: 4/23/19 Enter admin mode
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Wrong admin password!!!");
+            alert.setContentText(null);
+            alert.show();
+        }
+    }
+
     void signInCancelBtnClicked(MouseEvent mouseEvent) {
         if (invalidClick(mouseEvent)) return;
         controller.signInDialog.setResult("");
@@ -92,6 +119,12 @@ class CallBacks {
         controller.signUpDialog.hide();
     }
 
+    void adminSignInCancelBtnClicked(MouseEvent mouseEvent) {
+        if (invalidClick(mouseEvent)) return;
+        controller.adminSignInDialog.setResult("");
+        controller.adminSignInDialog.hide();
+    }
+
     void resizeSignInDialog() {
         controller.signInDialog.setHeight(260);
         controller.signInDialog.setWidth(350);
@@ -100,6 +133,11 @@ class CallBacks {
     void resizeSignUpDialog() {
         controller.signUpDialog.setHeight(300);
         controller.signUpDialog.setWidth(350);
+    }
+
+    void resizeAdminSignInDialog() {
+        controller.adminSignInDialog.setHeight(220);
+        controller.adminSignInDialog.setWidth(350);
     }
 
     private boolean invalidClick(MouseEvent mouseEvent) {

@@ -1,21 +1,35 @@
 package Library.users;
 
 import Library.controller.Controller;
+import Library.model.Book;
 import Library.model.User;
 
-public class UserController extends Controller {
+import java.util.List;
+
+public class UserController {
     private User user;
-    private Controller preController;
+    private Controller controller;
+    private int screenWidth, screenHeight;
+    private UserDatabase database;
 
     public UserController(int screenWidth, int screenHeight, User user, Controller preController) {
-        super(screenWidth, screenHeight);
         this.user = user;
-        this.preController = preController;
+        this.controller = preController;
+        this.screenHeight = screenHeight;
+        this.screenWidth = screenWidth;
+        database = new UserDatabase("root", "Ashkan007", "java_library");
+        database.connectDatabase();
         removePreView();
+        setupRentedBooks();
+    }
+
+
+    private void setupRentedBooks() {
+        List<Book> bookList = database.getBooks();
     }
 
     private void removePreView() {
-        preController.getStartButtonBox().setVisible(false);
-        preController.getAppTitle().setVisible(false);
+        controller.getStartButtonBox().setVisible(false);
+        controller.getAppTitle().setVisible(false);
     }
 }

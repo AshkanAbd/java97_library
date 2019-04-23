@@ -19,9 +19,10 @@ public class Controller {
     private int screenWidth, screenHeight;
     private CallBacks callBacks;
     private Main main;
-    Dialog<String> signInDialog, signUpDialog;
+    Dialog<String> signInDialog, signUpDialog, adminSignInDialog;
     TextField usernameSignInTextField, passwordSignInTextField;
     TextField usernameSignUpTextField, passwordSignUpTextField, emailSignUpTextField;
+    TextField adminSignInPassword;
     Database database;
     private Text appTitle;
     private HBox startButtonBox;
@@ -44,6 +45,7 @@ public class Controller {
         setupAppTitle();
         setupSignInDialog();
         setupSignUpDialog();
+        setupAdminSignInDialog();
     }
 
     private void setupAppTitle() {
@@ -65,9 +67,14 @@ public class Controller {
         Button signInBtn = new Button("Sign in");
         signInBtn.setPrefSize(100, 30);
         signInBtn.setOnMouseClicked(callBacks::signInBtnClicked);
-        startButtonBox.getChildren().addAll(signInBtn, signUpBtn);
+        Button adminSignInBtn = new Button("Admin");
+        adminSignInBtn.setPrefSize(100, 30);
+        adminSignInBtn.setOnMouseClicked(callBacks::adminSignInBtnClicked);
+        startButtonBox.getChildren().addAll(signInBtn, signUpBtn, adminSignInBtn);
         HBox.setMargin(signUpBtn, new Insets(0, 0, 0, 50));
-        startButtonBox.setPrefWidth(signInBtn.getPrefWidth() + signUpBtn.getPrefWidth() + HBox.getMargin(signUpBtn).getLeft());
+        HBox.setMargin(adminSignInBtn, new Insets(0, 0, 0, 50));
+        startButtonBox.setPrefWidth(signInBtn.getPrefWidth() + signUpBtn.getPrefWidth() + HBox.getMargin(signUpBtn).getLeft()
+                + adminSignInBtn.getPrefWidth() + HBox.getMargin(adminSignInBtn).getLeft());
         mainPane.getChildren().add(startButtonBox);
         AnchorPane.setTopAnchor(startButtonBox, screenHeight / 2.0 + 100);
         AnchorPane.setLeftAnchor(startButtonBox, (screenWidth / 2.0) - startButtonBox.prefWidthProperty().doubleValue() / 2);
@@ -156,6 +163,40 @@ public class Controller {
         signUpDialog.setOnShowing(_1 -> callBacks.resizeSignUpDialog());
     }
 
+    private void setupAdminSignInDialog() {
+        adminSignInPassword = new PasswordField();
+        Text dialogTitle = new Text("Enter admin password");
+        Button okButton = new Button("OK");
+        Button cancelButton = new Button("Cancel");
+        adminSignInPassword.setPrefWidth(310);
+        okButton.setPrefWidth(70);
+        okButton.setOnMouseClicked(callBacks::adminSignInOkBtnClicked);
+        cancelButton.setPrefWidth(70);
+        cancelButton.setOnMouseClicked(callBacks::adminSignInCancelBtnClicked);
+        dialogTitle.setStyle("-fx-font-family: 'DejaVu Serif';-fx-font-size: 20");
+        adminSignInDialog = new Dialog<>();
+        adminSignInDialog.setResizable(true);
+        adminSignInDialog.setTitle("Admin sign in");
+        DialogPane dialogPane = new DialogPane();
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getChildren().add(dialogTitle);
+        AnchorPane.setTopAnchor(dialogTitle, 30.0);
+        AnchorPane.setLeftAnchor(dialogTitle, 20.0);
+        anchorPane.getChildren().add(adminSignInPassword);
+        AnchorPane.setTopAnchor(adminSignInPassword, 100.0);
+        AnchorPane.setLeftAnchor(adminSignInPassword, 20.0);
+        anchorPane.getChildren().add(cancelButton);
+        AnchorPane.setTopAnchor(cancelButton, 150.0);
+        AnchorPane.setLeftAnchor(cancelButton, 180.0);
+        anchorPane.getChildren().add(okButton);
+        AnchorPane.setTopAnchor(okButton, 150.0);
+        AnchorPane.setLeftAnchor(okButton, 260.0);
+        dialogPane.getChildren().add(anchorPane);
+        dialogPane.setPrefSize(350, 190);
+        adminSignInDialog.setDialogPane(dialogPane);
+        adminSignInDialog.setOnShowing(_1 -> callBacks.resizeAdminSignInDialog());
+    }
+
     public void setMain(Main main) {
         this.main = main;
     }
@@ -166,5 +207,13 @@ public class Controller {
 
     public HBox getStartButtonBox() {
         return startButtonBox;
+    }
+
+    public AnchorPane getMainPane() {
+        return mainPane;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 }

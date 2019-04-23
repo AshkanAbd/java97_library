@@ -79,7 +79,7 @@ public class Book {
         StringBuilder builder = new StringBuilder();
         builder.append("{ name: ").append(name);
         builder.append(", write: ").append(writer);
-        if (owner != null || !owner.isEmpty()) {
+        if (owner != null && !owner.isEmpty()) {
             builder.append(", owner: ").append(owner);
             builder.append(", free date: ").append(freeDate.toString());
         }

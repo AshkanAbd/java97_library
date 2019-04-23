@@ -58,6 +58,7 @@ public class UserDatabase extends Database {
         try {
             String findUserQuery = QueryBuilder.selectUser(user.getUsername());
             ResultSet userResult = runQuery(findUserQuery);
+            userResult.first();
             User user1 = getUserFromResult(userResult);
             Map<String, String> cause = new HashMap<>();
             for (String idString : user1.getBooks()) {
