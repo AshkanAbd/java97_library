@@ -174,6 +174,7 @@ public class Database {
             String userInfoQuery = QueryBuilder.selectUser(book.getOwner());
             ResultSet result = runQuery(userInfoQuery);
             User user = new User(book.getOwner());
+            result.first();
             user.setBooks(result.getString("books"));
             user.removeBook(Integer.toString(book.getId()));
             String updateUserQuery = QueryBuilder.updateUser(user);

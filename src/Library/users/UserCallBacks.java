@@ -5,11 +5,8 @@ import Library.model.Book;
 import Library.view.BookPane;
 import javafx.scene.control.DatePicker;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.HashMap;
@@ -62,6 +59,15 @@ class UserCallBacks extends BaseCallBack {
         userController.bookInfoPane.setContent(null);
     }
 
+    private void paybackBook(MouseEvent mouseEvent, Book book) {
+        if (invalidClick(mouseEvent)) return;
+        userController.database.freeBook(book);
+        userController.user.removeBook(String.valueOf(book.getId()));
+        userController.refreshAllBookList(userController.database.getBooks());
+        userController.refreshRentedBookList(userController.database.rentedBooks(userController.user));
+        userController.bookInfoPane.setContent(null);
+    }
+
     void onBookClick(MouseEvent mouseEvent, Book book) {
         if (invalidClick(mouseEvent)) return;
         BookPane bookPane = new BookPane(book);
@@ -71,7 +77,7 @@ class UserCallBacks extends BaseCallBack {
             bookPane.setOnClick(e -> requestRent(e, book, bookPane.getDatePicker()));
         } else if (book.getOwner().equals(userController.user.getUsername())) {
             bookPane.getButton().setText("Payback");
-            // TODO: 4/24/19 add payback listener
+            bookPane.setOnClick(e -> paybackBook(e, book));
         } else {
             bookPane.getButton().setVisible(false);
         }
