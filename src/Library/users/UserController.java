@@ -17,6 +17,7 @@ public class UserController {
     private Controller controller;
     private int screenWidth, screenHeight;
     private UserDatabase database;
+    private ScrollPane rentedScrollPane, booksScrollPane;
 
     public UserController(int screenWidth, int screenHeight, User user, Controller preController) {
         this.user = user;
@@ -27,18 +28,46 @@ public class UserController {
         database.connectDatabase();
         removePreView();
         setupRentedBooks();
+        setupAllBooks();
+        controller.getMainPane().getChildren().addAll(rentedScrollPane, booksScrollPane);
+        AnchorPane.setLeftAnchor(rentedScrollPane, 30.0);
+        AnchorPane.setTopAnchor(rentedScrollPane, 20.0);
+        AnchorPane.setLeftAnchor(booksScrollPane, 300.0);
+        AnchorPane.setTopAnchor(booksScrollPane, 20.0);
     }
 
+    private void setupAllBooks() {
+        List<Book> bookList = database.getBooks();
+        Label booksLabel = new Label("All books");
+        booksLabel.setStyle("-fx-background-color: #F4F4F4;-fx-text-fill: #F00;-fx-text-alignment: center;-fx-alignment: center;" +
+                "-fx-font-family: 'DejaVu Serif';-fx-font-size: 20;-fx-padding: 10 0 10 0");
+        VBox vBox = createBookVBox(bookList, booksLabel);
+        booksLabel.setPrefWidth(vBox.getPrefWidth());
+        booksScrollPane = createScrollPane(vBox);
+    }
 
     private void setupRentedBooks() {
-        List<Book> bookList = database.rentedBooks(user);
-        Label rentedBooksLabel = new Label("Rented Books");
+        List<Book> rentedBookList = database.rentedBooks(user);
+        Label rentedBooksLabel = new Label("Rented books");
         rentedBooksLabel.setStyle("-fx-background-color: #F4F4F4;-fx-text-fill: #F00;-fx-text-alignment: center;-fx-alignment: center;" +
                 "-fx-font-family: 'DejaVu Serif';-fx-font-size: 20;-fx-padding: 10 0 10 0");
+        VBox vBox = createBookVBox(rentedBookList, rentedBooksLabel);
+        rentedBooksLabel.setPrefWidth(vBox.getPrefWidth());
+        rentedScrollPane = createScrollPane(vBox);
+    }
+
+    private ScrollPane createScrollPane(VBox vBox) {
+        ScrollPane scrollPane = new ScrollPane(vBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(screenHeight - 40);
+        return scrollPane;
+    }
+
+    private VBox createBookVBox(List<Book> books, Label header) {
         VBox vBox = new VBox();
-        vBox.getChildren().add(rentedBooksLabel);
+        vBox.getChildren().add(header);
         vBox.setPrefHeight(50);
-        for (Book book : bookList) {
+        for (Book book : books) {
             BookViewHolder viewHolder = new BookViewHolder(book);
             viewHolder.setOnClick(e -> System.out.println(book.getName()));
             Divider divider = new Divider("#f00", viewHolder.getPane().getPrefWidth() + 10, 5);
@@ -46,13 +75,7 @@ public class UserController {
             vBox.setPrefHeight(vBox.getPrefHeight() + viewHolder.getPane().getPrefHeight() + 5);
         }
         vBox.setPrefWidth(250);
-        rentedBooksLabel.setPrefWidth(vBox.getPrefWidth());
-        ScrollPane scrollPane = new ScrollPane(vBox);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(screenHeight - 40);
-        controller.getMainPane().getChildren().addAll(scrollPane);
-        AnchorPane.setLeftAnchor(scrollPane, 40.0);
-        AnchorPane.setTopAnchor(scrollPane, 20.0);
+        return vBox;
     }
 
     private void removePreView() {

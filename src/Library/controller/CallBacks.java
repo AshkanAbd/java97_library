@@ -43,10 +43,10 @@ class CallBacks {
         controller.signInDialog.setResult("");
         controller.signInDialog.hide();
         if (controller.database.signIn(username, password)) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Sign in successfully");
-            alert.setContentText(null);
-            alert.show();
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setHeaderText("Sign in successfully");
+//            alert.setContentText(null);
+//            alert.show();
             controller.enterUserMode(new User(username));
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -68,8 +68,9 @@ class CallBacks {
         Object[] result = controller.database.signUp(user);
         if ((boolean) result[0]) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Sign up successfully\nNow you can login");
+            alert.setHeaderText("Sign up successfully\nClick OK to login");
             alert.setContentText(null);
+            alert.setOnHiding(v -> controller.enterUserMode(user));
             alert.show();
         } else {
             int errorCode = (int) result[1];

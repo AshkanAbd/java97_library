@@ -16,8 +16,10 @@ public class BookViewHolder {
     private Label writerLabel;
     private Label ownerLabel;
     private Label dateLabel;
+    private Book book;
 
     public BookViewHolder(Book book) {
+        this.book = book;
         pane = new GridPane();
         nameLabel = new Label("name :" + book.getName());
         writerLabel = new Label("writer :" + book.getWriter());
@@ -83,5 +85,9 @@ public class BookViewHolder {
 
     public Label getDateLabel() {
         return dateLabel;
+    }
+
+    public Book getBook() {
+        return book;
     }
 }
