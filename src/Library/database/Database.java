@@ -42,6 +42,15 @@ public class Database {
         }
     }
 
+    public void close() {
+        try {
+            connection.close();
+            System.out.println("Close database connection");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ResultSet runQuery(String query) throws SQLException {
         Statement statement = connection.createStatement();
         if (statement.execute(query)) {

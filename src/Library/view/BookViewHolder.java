@@ -25,7 +25,7 @@ public class BookViewHolder {
         writerLabel = new Label("writer :" + book.getWriter());
         ownerLabel = new Label();
         dateLabel = new Label();
-        if (book.getOwner() != null) {
+        if (book.getOwner() != null && !book.getOwner().isEmpty()) {
             ownerLabel.setText("owner :" + book.getOwner());
             Date date = new Date(book.getFreeDate().getTime());
             dateLabel.setText("until :" + date.toString());

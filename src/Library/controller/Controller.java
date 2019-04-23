@@ -219,4 +219,8 @@ public class Controller {
     public Database getDatabase() {
         return database;
     }
+
+    public Main getMain() {
+        return main;
+    }
 }

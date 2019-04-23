@@ -6,7 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-class CallBacks {
+class CallBacks extends BaseCallBack {
     private Controller controller;
 
     CallBacks(Controller controller) {
@@ -139,10 +139,5 @@ class CallBacks {
     void resizeAdminSignInDialog() {
         controller.adminSignInDialog.setHeight(220);
         controller.adminSignInDialog.setWidth(350);
-    }
-
-    private boolean invalidClick(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() != MouseButton.PRIMARY) return true;
-        return mouseEvent.getClickCount() != 1;
     }
 }
