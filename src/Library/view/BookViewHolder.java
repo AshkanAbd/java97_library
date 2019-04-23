@@ -2,7 +2,6 @@ package Library.view;
 
 import Library.model.Book;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;

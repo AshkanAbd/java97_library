@@ -3,7 +3,6 @@ package Library.controller;
 import Library.database.Database;
 import Library.model.User;
 import javafx.scene.control.Alert;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 class CallBacks extends BaseCallBack {
@@ -42,11 +41,7 @@ class CallBacks extends BaseCallBack {
         if (username.equals("admin")) return;
         controller.signInDialog.setResult("");
         controller.signInDialog.hide();
-        if (controller.database.signIn(username, password)) {
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setHeaderText("Sign in successfully");
-//            alert.setContentText(null);
-//            alert.show();
+        if (controller.getDatabase().signIn(username, password)) {
             controller.enterUserMode(new User(username));
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -65,7 +60,7 @@ class CallBacks extends BaseCallBack {
         controller.signUpDialog.setResult("");
         controller.signUpDialog.hide();
         User user = new User(username, email, password);
-        Object[] result = controller.database.signUp(user);
+        Object[] result = controller.getDatabase().signUp(user);
         if ((boolean) result[0]) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Sign up successfully\nClick OK to login");
@@ -93,7 +88,7 @@ class CallBacks extends BaseCallBack {
         if (password.isEmpty()) return;
         controller.adminSignInDialog.setResult("");
         controller.adminSignInDialog.hide();
-        if (controller.database.signIn("admin", password)) {
+        if (controller.getDatabase().signIn("admin", password)) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Enter admin mode successfully");
             alert.setContentText(null);

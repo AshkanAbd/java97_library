@@ -9,7 +9,6 @@ import org.json.JSONException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.HashMap;

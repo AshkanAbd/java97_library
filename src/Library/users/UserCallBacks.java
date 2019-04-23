@@ -31,13 +31,13 @@ class UserCallBacks extends BaseCallBack {
             if (!owner.isEmpty()) cause.put("owner", owner);
             if (!date.isEmpty()) cause.put("free_date", date);
         }
-        List<Book> bookList = userController.database.getBooks(cause);
+        List<Book> bookList = userController.getDatabase().getBooks(cause);
         if (list.equalsIgnoreCase("All books")) {
             userController.refreshAllBookList(bookList);
         } else {
             List<Book> rentedBooks = new ArrayList<>();
             for (Book book : bookList) {
-                if (userController.rentedBookList.contains(book)) {
+                if (userController.getRentedBookList().contains(book)) {
                     rentedBooks.add(book);
                 }
             }
@@ -53,18 +53,20 @@ class UserCallBacks extends BaseCallBack {
         Date rentDate = Date.valueOf(dateString);
         if (!rentDate.after(today)) return;
         book.setFreeDate(rentDate);
-        userController.database.requestBook(book, userController.user);
-        userController.refreshAllBookList(userController.database.getBooks());
-        userController.refreshRentedBookList(userController.database.rentedBooks(userController.user));
+        userController.getRentedBookList().add(book);
+        userController.getDatabase().requestBook(book, userController.getUser());
+        userController.refreshAllBookList(userController.getDatabase().getBooks());
+        userController.refreshRentedBookList(userController.getDatabase().rentedBooks(userController.getUser()));
         userController.bookInfoPane.setContent(null);
     }
 
     private void paybackBook(MouseEvent mouseEvent, Book book) {
         if (invalidClick(mouseEvent)) return;
-        userController.database.freeBook(book);
-        userController.user.removeBook(String.valueOf(book.getId()));
-        userController.refreshAllBookList(userController.database.getBooks());
-        userController.refreshRentedBookList(userController.database.rentedBooks(userController.user));
+        userController.getDatabase().freeBook(book);
+        userController.getRentedBookList().remove(book);
+        userController.getUser().removeBook(String.valueOf(book.getId()));
+        userController.refreshAllBookList(userController.getDatabase().getBooks());
+        userController.refreshRentedBookList(userController.getDatabase().rentedBooks(userController.getUser()));
         userController.bookInfoPane.setContent(null);
     }
 
@@ -75,7 +77,7 @@ class UserCallBacks extends BaseCallBack {
         if (book.getOwner() == null || book.getOwner().isEmpty()) {
             bookPane.getButton().setText("Rent");
             bookPane.setOnClick(e -> requestRent(e, book, bookPane.getDatePicker()));
-        } else if (book.getOwner().equals(userController.user.getUsername())) {
+        } else if (book.getOwner().equals(userController.getUser().getUsername())) {
             bookPane.getButton().setText("Payback");
             bookPane.setOnClick(e -> paybackBook(e, book));
         } else {
@@ -85,14 +87,10 @@ class UserCallBacks extends BaseCallBack {
 
     void changeController(MouseEvent mouseEvent) {
         if (invalidClick(mouseEvent)) return;
-        userController.booksScrollPane.setVisible(false);
-        userController.rentedScrollPane.setVisible(false);
-        userController.signOut.setVisible(false);
-        userController.searchBox.setVisible(false);
-        userController.bookInfoPane.setVisible(false);
-        userController.controller.getStartButtonBox().setVisible(true);
-        userController.controller.getAppTitle().setVisible(true);
-        userController.controller.getMain().getLoader().setController(userController.controller);
-        userController.database.close();
+        userController.removeViews();
+        userController.getController().getStartButtonBox().setVisible(true);
+        userController.getController().getAppTitle().setVisible(true);
+        userController.getController().getMain().getLoader().setController(userController.getController());
+        userController.getDatabase().close();
     }
 }

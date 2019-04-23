@@ -15,15 +15,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class UserController {
-    User user;
-    Controller controller;
+    private User user;
+    private Controller controller;
     private int screenWidth, screenHeight;
-    UserDatabase database;
-    ScrollPane rentedScrollPane, booksScrollPane, bookInfoPane;
-    VBox searchBox;
-    Button signOut;
+    private UserDatabase database;
+    private ScrollPane rentedScrollPane, booksScrollPane;
+    ScrollPane bookInfoPane;
+    private VBox searchBox;
+    private Button signOut;
     private Label booksLabel, rentedBooksLabel;
-    List<Book> rentedBookList;
+    private List<Book> rentedBookList;
     private UserCallBacks callBacks;
 
     public UserController(int screenWidth, int screenHeight, User user, Controller preController) {
@@ -66,12 +67,12 @@ public class UserController {
         controller.getMainPane().getChildren().add(signOut);
     }
 
-    void refreshAllBookList(List<Book> bookList) {
+    public void refreshAllBookList(List<Book> bookList) {
         VBox vBox = createBookVBox(bookList, booksLabel);
         booksScrollPane.setContent(vBox);
     }
 
-    void refreshRentedBookList(List<Book> bookList) {
+    public void refreshRentedBookList(List<Book> bookList) {
         VBox vBox = createBookVBox(bookList, rentedBooksLabel);
         rentedScrollPane.setContent(vBox);
     }
@@ -165,5 +166,29 @@ public class UserController {
     private void removePreView() {
         controller.getStartButtonBox().setVisible(false);
         controller.getAppTitle().setVisible(false);
+    }
+
+    public void removeViews() {
+        booksScrollPane.setVisible(false);
+        rentedScrollPane.setVisible(false);
+        signOut.setVisible(false);
+        searchBox.setVisible(false);
+        bookInfoPane.setVisible(false);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public UserDatabase getDatabase() {
+        return database;
+    }
+
+    public List<Book> getRentedBookList() {
+        return rentedBookList;
     }
 }

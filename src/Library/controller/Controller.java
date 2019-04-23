@@ -23,7 +23,7 @@ public class Controller {
     TextField usernameSignInTextField, passwordSignInTextField;
     TextField usernameSignUpTextField, passwordSignUpTextField, emailSignUpTextField;
     TextField adminSignInPassword;
-    Database database;
+    private Database database;
     private Text appTitle;
     private HBox startButtonBox;
 
@@ -95,7 +95,6 @@ public class Controller {
         dialogTitle.setStyle("-fx-font-family: 'DejaVu Serif';-fx-font-size: 20");
         signInDialog = new Dialog<>();
         signInDialog.setResizable(false);
-        signInDialog.setResizable(true);
         signInDialog.setTitle("Sign In");
         DialogPane dialogPane = new DialogPane();
         AnchorPane anchorPane = new AnchorPane();
