@@ -94,6 +94,7 @@ public class Controller {
         cancelButton.setOnMouseClicked(callBacks::signInCancelBtnClicked);
         dialogTitle.setStyle("-fx-font-family: 'DejaVu Serif';-fx-font-size: 20");
         signInDialog = new Dialog<>();
+        signInDialog.setResizable(false);
         signInDialog.setResizable(true);
         signInDialog.setTitle("Sign In");
         DialogPane dialogPane = new DialogPane();
@@ -137,6 +138,7 @@ public class Controller {
         signUpDialog = new Dialog<>();
         signUpDialog.setResizable(true);
         signUpDialog.setTitle("Sign up");
+        signUpDialog.setResizable(false);
         DialogPane dialogPane = new DialogPane();
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().add(dialogTitle);
@@ -177,6 +179,7 @@ public class Controller {
         adminSignInDialog = new Dialog<>();
         adminSignInDialog.setResizable(true);
         adminSignInDialog.setTitle("Admin sign in");
+        adminSignInDialog.setResizable(false);
         DialogPane dialogPane = new DialogPane();
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().add(dialogTitle);
