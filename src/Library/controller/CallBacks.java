@@ -29,7 +29,7 @@ class CallBacks extends BaseCallBack {
 
     void adminSignInBtnClicked(MouseEvent mouseEvent) {
         if (invalidClick(mouseEvent)) return;
-        controller.adminSignInPassword.setText("");
+        controller.adminSignInPassword.setText("admin");
         controller.adminSignInDialog.show();
     }
 
@@ -89,12 +89,7 @@ class CallBacks extends BaseCallBack {
         controller.adminSignInDialog.setResult("");
         controller.adminSignInDialog.hide();
         if (controller.getDatabase().signIn("admin", password)) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Enter admin mode successfully");
-            alert.setContentText(null);
-            alert.show();
-//            controller.enterUserMode(new User(username));
-            // TODO: 4/23/19 Enter admin mode
+            controller.enterAdminMode();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Wrong admin password!!!");

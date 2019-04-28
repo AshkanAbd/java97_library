@@ -1,5 +1,6 @@
 package Library.controller;
 
+import Library.Admin.AdminController;
 import Library.Main;
 import Library.database.Database;
 import Library.model.User;
@@ -13,10 +14,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 
-public class Controller {
+public class Controller extends BaseController {
     @FXML
     private AnchorPane mainPane;
-    private int screenWidth, screenHeight;
     private CallBacks callBacks;
     private Main main;
     Dialog<String> signInDialog, signUpDialog, adminSignInDialog;
@@ -37,6 +37,11 @@ public class Controller {
     void enterUserMode(User user) {
         UserController userController = new UserController(screenWidth, screenHeight, user, this);
         main.getLoader().setController(userController);
+    }
+
+    void enterAdminMode() {
+        AdminController adminController = new AdminController(this);
+        main.getLoader().setController(adminController);
     }
 
     public void initialize() {
@@ -221,5 +226,13 @@ public class Controller {
 
     public Main getMain() {
         return main;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
     }
 }

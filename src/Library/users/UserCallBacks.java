@@ -91,6 +91,6 @@ class UserCallBacks extends BaseCallBack {
         userController.getController().getStartButtonBox().setVisible(true);
         userController.getController().getAppTitle().setVisible(true);
         userController.getController().getMain().getLoader().setController(userController.getController());
-        userController.getDatabase().close();
+        userController.closeDatabase(userController.getDatabase());
     }
 }

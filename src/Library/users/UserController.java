@@ -1,5 +1,6 @@
 package Library.users;
 
+import Library.controller.BaseController;
 import Library.controller.Controller;
 import Library.model.Book;
 import Library.view.DateConverter;
@@ -14,10 +15,9 @@ import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 import java.util.List;
 
-public class UserController {
+public class UserController extends BaseController {
     private User user;
     private Controller controller;
-    private int screenWidth, screenHeight;
     private UserDatabase database;
     private ScrollPane rentedScrollPane, booksScrollPane;
     ScrollPane bookInfoPane;
@@ -31,8 +31,6 @@ public class UserController {
         this.user = user;
         this.callBacks = new UserCallBacks(this);
         this.controller = preController;
-        this.screenHeight = screenHeight;
-        this.screenWidth = screenWidth;
         database = new UserDatabase("root", "Ashkan007", "java_library");
         database.connectDatabase();
         removePreView();
@@ -139,12 +137,6 @@ public class UserController {
         AnchorPane.setTopAnchor(searchBox, 20.0);
     }
 
-    private ScrollPane createScrollPane(VBox vBox) {
-        ScrollPane scrollPane = new ScrollPane(vBox);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(screenHeight - 40);
-        return scrollPane;
-    }
 
     private VBox createBookVBox(List<Book> books, Label header) {
         VBox vBox = new VBox();
